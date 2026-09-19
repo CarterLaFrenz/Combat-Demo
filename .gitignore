@@ -2,4 +2,4 @@
 .import/
 export.cfg
 export_presets.cfg
-*.translation
+*.translation.DS_Store
