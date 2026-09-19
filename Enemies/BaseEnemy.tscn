@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://dttyhnaj2aoob"]
+
+[ext_resource type="Script" uid="uid://dsuchai26hsf6" path="res://Enemies/base_enemy.gd" id="1_rwavt"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_rwavt"]
+radius = 12.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_nqv13"]
+radius = 12.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rwavt"]
+size = Vector2(24, 24)
+
+[node name="BaseEnemy" type="CharacterBody2D" unique_id=1525859072 groups=["enemy"]]
+script = ExtResource("1_rwavt")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2027355423]
+
+[node name="ColorRect" type="ColorRect" parent="Sprite2D" unique_id=379614742]
+offset_left = -12.0
+offset_top = -12.0
+offset_right = 12.0
+offset_bottom = 12.0
+color = Color(0.50727683, 0.15542582, 0.0807557, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=991290160]
+shape = SubResource("CircleShape2D_rwavt")
+
+[node name="Hitbox" type="Area2D" parent="." unique_id=97601368 groups=["enemy_hurtbox"]]
+monitoring = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=1220510275]
+shape = SubResource("CircleShape2D_nqv13")
+
+[node name="HitboxArea" type="Area2D" parent="." unique_id=974346777 groups=["enemy_hitbox"]]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxArea" unique_id=1536992922]
+shape = SubResource("RectangleShape2D_rwavt")

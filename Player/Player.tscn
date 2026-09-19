@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://wvcleqibqfu1"]
+
+[ext_resource type="Script" uid="uid://b0igm2i7lwfgl" path="res://Player/player.gd" id="1_3qydi"]
+[ext_resource type="Script" uid="uid://86rcfvqatf8i" path="res://Player/WeaponManager.gd" id="2_8g4oa"]
+[ext_resource type="PackedScene" uid="uid://c7tx6pvyryakt" path="res://Weapons/HeavyWeapon.tscn" id="3_6ysni"]
+[ext_resource type="PackedScene" uid="uid://31h0yfqgqt7d" path="res://Weapons/LightWeapon.tscn" id="4_vlldt"]
+[ext_resource type="PackedScene" uid="uid://dxgogxu8xjlb4" path="res://Weapons/RangedWeapon.tscn" id="5_s1rgi"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_3qydi"]
+radius = 16.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8g4oa"]
+size = Vector2(32, 32)
+
+[node name="Player" type="CharacterBody2D" unique_id=1647931884 groups=["player"]]
+process_mode = 1
+script = ExtResource("1_3qydi")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=439834303]
+
+[node name="ColorRect" type="ColorRect" parent="Sprite2D" unique_id=2058758209]
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+color = Color(0.59170204, 0.99950844, 0.6843934, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1243622514]
+shape = SubResource("CircleShape2D_3qydi")
+
+[node name="HurtboxArea" type="Area2D" parent="." unique_id=761633952]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtboxArea" unique_id=1377034256]
+shape = SubResource("RectangleShape2D_8g4oa")
+
+[node name="WeaponPivot" type="Marker2D" parent="." unique_id=79125721]
+process_mode = 1
+script = ExtResource("2_8g4oa")
+
+[node name="HeavyWeapon" parent="WeaponPivot" unique_id=1080407253 instance=ExtResource("3_6ysni")]
+
+[node name="LightWeapon" parent="WeaponPivot" unique_id=344931263 instance=ExtResource("4_vlldt")]
+
+[node name="RangedWeapon" parent="WeaponPivot" unique_id=1129598773 instance=ExtResource("5_s1rgi")]
+
+[node name="InvincibilityTimer" type="Timer" parent="." unique_id=1673956024]
+wait_time = 0.5
+one_shot = true
+
+[connection signal="timeout" from="InvincibilityTimer" to="." method="_on_invincibility_timer_timeout"]

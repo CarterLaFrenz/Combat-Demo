@@ -1,0 +1,125 @@
+[gd_scene format=3 uid="uid://dxgogxu8xjlb4"]
+
+[ext_resource type="Script" uid="uid://syhsc6ssjt65" path="res://Weapons/ranged_weapon.gd" id="1_lanyh"]
+
+[sub_resource type="Animation" id="Animation_lanyh"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_54gaf"]
+resource_name = "recoil"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.15, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(-5, 0), Vector2(0, 0)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.033333335),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"open_combo_window"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_wr548"]
+resource_name = "recoil_2"
+length = 0.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.13, 0.25),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(-5, 0), Vector2(0, 0)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.033333335),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"open_combo_window"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_aa8q8"]
+resource_name = "recoil_3"
+length = 0.35
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.15, 0.35),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(-10, 0), Vector2(0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_wr548"]
+_data = {
+&"RESET": SubResource("Animation_lanyh"),
+&"recoil": SubResource("Animation_54gaf"),
+&"recoil_2": SubResource("Animation_wr548"),
+&"recoil_3": SubResource("Animation_aa8q8")
+}
+
+[node name="RangedWeapon" type="Node2D" unique_id=1129598773]
+process_mode = 1
+script = ExtResource("1_lanyh")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=320171184]
+
+[node name="ColorRect" type="ColorRect" parent="Sprite2D" unique_id=2032603611]
+offset_left = 18.0
+offset_top = -4.0
+offset_right = 32.0
+offset_bottom = 6.0
+color = Color(1, 0.4435146, 0.76003647, 1)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1502623975]
+libraries/ = SubResource("AnimationLibrary_wr548")
+
+[node name="CooldownTimer" type="Timer" parent="." unique_id=1137092280]
+wait_time = 0.3
+one_shot = true
+
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
+[connection signal="timeout" from="CooldownTimer" to="." method="_on_cooldown_timer_timeout"]
