@@ -57,16 +57,16 @@ Built in **Godot 4.7** with **GDScript**. The main design goals were extensibili
 
 ## Project Structure
 
-```
-Arena/       Level scene and arena setup
-Enemies/     Enemy scenes and scripts
-Player/      Player scene and controller
-Weapons/     Weapon scenes, WeaponManager, and projectiles
-globals/     Autoloads and shared state
-main.gd      Game loop and screen flow
-wave_spawner.gd  Wave-based enemy spawning
-enemy_data.gd    EnemyData resource definition
-```
+
+Arena/          Level scene and arena setup
+Core/           Wave spawner and camera
+Enemies/        Enemy scenes, scripts, and EnemyData resource
+Player/         Player scene and controller
+Weapons/        Weapon scenes, WeaponManager, and projectiles
+globals/        Autoloads and shared state
+main.tscn       Entry scene
+main.gd         Game loop and screen flow
+
 
 ## Running Locally
 
