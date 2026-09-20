@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://cwx7dxt0fd7df" path="res://main.gd" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://wvcleqibqfu1" path="res://Player/Player.tscn" id="2_0xm2m"]
-[ext_resource type="Script" uid="uid://cdufs65pkipnh" path="res://camera_2d.gd" id="4_1bvp3"]
-[ext_resource type="Script" uid="uid://cf8op0wywwblp" path="res://wave_spawner.gd" id="5_lquwl"]
+[ext_resource type="Script" uid="uid://cdufs65pkipnh" path="res://Core/camera_2d.gd" id="4_1bvp3"]
+[ext_resource type="Script" uid="uid://cf8op0wywwblp" path="res://Core/wave_spawner.gd" id="5_lquwl"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_1bvp3"]
 font_size = 24
