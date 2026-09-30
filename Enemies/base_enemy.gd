@@ -1,7 +1,7 @@
-
+class_name BaseEnemy
 extends CharacterBody2D
 
-const STATE_IDLE = 0
+const STATE_CHASE = 0
 const STATE_STUNNED = 1
 const STATE_DYING = 2
 
@@ -9,18 +9,25 @@ const STATE_DYING = 2
 @export var enemy_data: EnemyData
 
 var health: int
-var current_state: int = STATE_IDLE
+var current_state: int = STATE_CHASE
 var knockback_velocity: Vector2 = Vector2.ZERO
 
-signal died
+signal died(points: int)
+
+var _player: Node2D
+var _base_modulate: Color = Color.WHITE
 
 
 func _ready():
-	if enemy_data:
-		health = enemy_data.max_health
-	else:
-		push_warning("No EnemyData assigned to " + name)
-		health = 100
+	
+	if enemy_data == null:
+		push_warning("No EnemyData assigned to " + name + ", using defaults")
+		enemy_data = EnemyData.new()
+	
+	health = enemy_data.max_health
+	scale = Vector2.ONE * enemy_data.body_scale  # overrides any scale set on the scene root
+	_base_modulate = sprite.modulate
+	_player = get_tree().get_first_node_in_group("player")
 
 
 func _physics_process(delta: float) -> void:
@@ -36,23 +43,26 @@ func _physics_process(delta: float) -> void:
 
 func _handle_state(delta: float) -> void:
 	match current_state:
-		STATE_IDLE:
-			_state_idle(delta)
+		STATE_CHASE:
+			_state_chase(delta)
 		STATE_STUNNED:
 			_state_stunned(delta)
 		STATE_DYING:
 			pass
 
 
-func _state_idle(_delta: float) -> void:
-	var player = get_tree().get_first_node_in_group("player")
-	if player:
-		var direction = global_position.direction_to(player.global_position)
-		velocity = direction * enemy_data.move_speed
-		sprite.flip_h = velocity.x < 0
-	else:
-		velocity = Vector2.ZERO
+func _state_chase(delta: float) -> void:
+	velocity = _get_chase_direction(delta).normalized() * enemy_data.move_speed
+	if _has_target():
+		sprite.flip_h = _player.global_position.x < global_position.x
 
+func _get_chase_direction(_delta: float) -> Vector2:
+	if not _has_target():
+		return Vector2.ZERO
+	return global_position.direction_to(_player.global_position)
+
+func _has_target() -> bool:
+	return is_instance_valid(_player)
 
 func _state_stunned(delta: float) -> void:
 	velocity = knockback_velocity
@@ -74,7 +84,7 @@ func _change_state(new_state: int) -> void:
 func _enter_state(state: int) -> void:
 	match state:
 		STATE_DYING:
-			died.emit()
+			died.emit(enemy_data.score_value)
 			spawn_death_particles()
 			queue_free()
 
@@ -84,7 +94,7 @@ func _exit_state(_state: int) -> void:
 
 
 func _get_default_state() -> int:
-	return STATE_IDLE
+	return STATE_CHASE
 
 
 # --- Damage ---

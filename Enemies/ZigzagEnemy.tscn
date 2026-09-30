@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://devewqoeslptk"]
+
+[ext_resource type="PackedScene" uid="uid://dttyhnaj2aoob" path="res://Enemies/BaseEnemy.tscn" id="1_6r7sw"]
+[ext_resource type="Script" uid="uid://c8et7mcbt8jue" path="res://Enemies/zigzag_enemy.gd" id="2_68cud"]
+
+[node name="ZigzagEnemy" unique_id=1525859072 instance=ExtResource("1_6r7sw")]
+script = ExtResource("2_68cud")
+zigzag_frequency = 4.0
+zigzag_amplitude = 0.8
+straighten_range = 80.0
+
+[node name="ColorRect" parent="Sprite2D" parent_id_path=PackedInt32Array(2027355423) index="0" unique_id=379614742]
+color = Color(0.50188625, 0.043618828, 0.40918356, 1)

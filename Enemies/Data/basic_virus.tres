@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3 uid="uid://cuf0ch1qneed1"]
+
+[ext_resource type="Script" uid="uid://bp6vc221wlamc" path="res://Enemies/enemy_data.gd" id="1_hkfcw"]
+
+[resource]
+script = ExtResource("1_hkfcw")
+max_health = 30
+move_speed = 150.0
+contact_damage = 10
+metadata/_custom_type_script = "uid://bp6vc221wlamc"

@@ -1,3 +1,4 @@
+
 extends Resource
 
 class_name EnemyData
@@ -7,3 +8,4 @@ class_name EnemyData
 @export var contact_damage : int = 1
 @export var knockback_res : float = 1.0
 @export var score_value : int = 1
+@export var body_scale: float = 1.0

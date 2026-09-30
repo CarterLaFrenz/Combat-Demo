@@ -6,6 +6,12 @@ extends Node
 @onready var game_timer = $GameTimer
 
 var enemy_scene = preload("res://Enemies/BaseEnemy.tscn")
+var zigzag_scene = preload("res://Enemies/ZigzagEnemy.tscn")
+
+var basic_data = preload("res://Enemies/Data/basic_virus.tres")
+var zigzag_data = preload("res://Enemies/Data/zigzag_virus.tres")
+var big_data = preload("res://Enemies/Data/big_virus.tres")
+
 var score = 0
 var game_duration = 90.0
 var arena_size = Vector2(1920, 1080)
@@ -14,6 +20,7 @@ var base_spawn_interval = 3.0
 var min_spawn_interval = 0.8
 var base_enemies_per_wave = 1
 var big_enemy_threshold = 30.0
+var zigzag_enemy_threshold = 15.0
 
 func _ready():
 	var player = get_tree().get_first_node_in_group("player")
@@ -45,20 +52,19 @@ func _on_spawn_timer_timeout():
 		spawn_enemy(elapsed)
 
 func spawn_enemy(elapsed: float):
-	var enemy = enemy_scene.instantiate()
-	enemy.global_position = get_spawn_position()
+	var enemy
+	var roll = randf()
 	
-	enemy.enemy_data = EnemyData.new()
-	
-	if elapsed > big_enemy_threshold and randf() > 0.6:
-		enemy.enemy_data.move_speed = 70
-		enemy.enemy_data.max_health = 100
-		enemy.enemy_data.contact_damage = 30
-		enemy.scale = Vector2(1.5, 1.5)
+	if elapsed > big_enemy_threshold and roll > 0.6:
+		enemy = enemy_scene.instantiate()
+		enemy.enemy_data = big_data
+	elif elapsed > zigzag_enemy_threshold and roll > 0.35 and roll <= 0.6:
+		enemy = zigzag_scene.instantiate()
+		enemy.enemy_data = zigzag_data
 	else:
-		enemy.enemy_data.move_speed = 150.0
-		enemy.enemy_data.max_health = 30
-		enemy.enemy_data.contact_damage = 10
+		enemy = enemy_scene.instantiate()
+		enemy.enemy_data = basic_data
+	enemy.global_position = get_spawn_position()
 	enemy.health = enemy.enemy_data.max_health
 	enemy.died.connect(_on_enemy_died)
 	get_tree().current_scene.add_child(enemy)
@@ -72,8 +78,8 @@ func get_spawn_position() -> Vector2:
 		3: return Vector2(arena_size.x + 50, randf_range(0, arena_size.y))
 	return Vector2.ZERO
 
-func _on_enemy_died():
-	score += 1
+func _on_enemy_died(points: int):
+	score += points
 	update_score_label()
 
 func update_score_label():
