@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="WaveData" format=3 uid="uid://m8ld2my2wj0d"]
+
+[ext_resource type="Script" uid="uid://bsst605eyxs0h" path="res://wave_data.gd" id="1_wwa2y"]
+[ext_resource type="Script" uid="uid://sy26txyf3q51" path="res://spawn_entry.gd" id="2_ypftn"]
+[ext_resource type="Resource" uid="uid://cuf0ch1qneed1" path="res://Enemies/Data/basic_virus.tres" id="3_imglm"]
+[ext_resource type="PackedScene" uid="uid://dttyhnaj2aoob" path="res://Enemies/BaseEnemy.tscn" id="4_ippfm"]
+
+[sub_resource type="Resource" id="Resource_imglm"]
+script = ExtResource("2_ypftn")
+enemy_scene = ExtResource("4_ippfm")
+enemy_data = ExtResource("3_imglm")
+count = 3
+metadata/_custom_type_script = "uid://sy26txyf3q51"
+
+[resource]
+script = ExtResource("1_wwa2y")
+spawn_entries = Array[ExtResource("2_ypftn")]([SubResource("Resource_imglm")])
+time_gap = 3
+metadata/_custom_type_script = "uid://bsst605eyxs0h"

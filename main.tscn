@@ -3,7 +3,13 @@
 [ext_resource type="Script" uid="uid://cwx7dxt0fd7df" path="res://main.gd" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://wvcleqibqfu1" path="res://Player/Player.tscn" id="2_0xm2m"]
 [ext_resource type="Script" uid="uid://cdufs65pkipnh" path="res://Core/camera_2d.gd" id="4_1bvp3"]
+[ext_resource type="Script" uid="uid://bsst605eyxs0h" path="res://wave_data.gd" id="5_4c57u"]
 [ext_resource type="Script" uid="uid://cf8op0wywwblp" path="res://Core/wave_spawner.gd" id="5_lquwl"]
+[ext_resource type="Resource" uid="uid://m8ld2my2wj0d" path="res://Waves/wave_01.tres" id="6_efxa6"]
+[ext_resource type="Resource" uid="uid://cy1pdk6xi8xnw" path="res://Waves/wave_02.tres" id="7_dg77c"]
+[ext_resource type="Resource" uid="uid://c3lvnsa4ol8a3" path="res://Waves/wave_03.tres" id="8_ycdy4"]
+[ext_resource type="Resource" uid="uid://dnw5airq2jh82" path="res://Waves/wave_04.tres" id="9_w48qg"]
+[ext_resource type="Resource" uid="uid://chwcjhn41toax" path="res://Waves/wave_05.tres" id="10_vivmo"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_1bvp3"]
 font_size = 24
@@ -48,10 +54,12 @@ color = Color(0.48235294, 1, 0.09803922, 1)
 [node name="WaveSpawner" type="Node" parent="." unique_id=881559156]
 process_mode = 3
 script = ExtResource("5_lquwl")
+waves = Array[ExtResource("5_4c57u")]([ExtResource("6_efxa6"), ExtResource("7_dg77c"), ExtResource("8_ycdy4"), ExtResource("9_w48qg"), ExtResource("10_vivmo")])
 
 [node name="SpawnTimer" type="Timer" parent="WaveSpawner" unique_id=105167518]
 
-[node name="GameTimer" type="Timer" parent="WaveSpawner" unique_id=173105456]
+[node name="IntermissionTimer" type="Timer" parent="WaveSpawner" unique_id=173105456]
+wait_time = 3.0
 one_shot = true
 
 [node name="StartScreen" type="CanvasLayer" parent="." unique_id=1780159406]
@@ -85,4 +93,4 @@ Left/Right click — Switch Weapon"
 horizontal_alignment = 1
 
 [connection signal="timeout" from="WaveSpawner/SpawnTimer" to="WaveSpawner" method="_on_spawn_timer_timeout"]
-[connection signal="timeout" from="WaveSpawner/GameTimer" to="WaveSpawner" method="_on_game_timer_timeout"]
+[connection signal="timeout" from="WaveSpawner/IntermissionTimer" to="WaveSpawner" method="_on_intermission_timer_timeout"]

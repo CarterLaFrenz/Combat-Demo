@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="WaveData" format=3 uid="uid://c3lvnsa4ol8a3"]
+
+[ext_resource type="Script" uid="uid://bsst605eyxs0h" path="res://wave_data.gd" id="1_h4req"]
+[ext_resource type="Script" uid="uid://sy26txyf3q51" path="res://spawn_entry.gd" id="2_djyry"]
+[ext_resource type="Resource" uid="uid://cuf0ch1qneed1" path="res://Enemies/Data/basic_virus.tres" id="3_lqos2"]
+[ext_resource type="PackedScene" uid="uid://dttyhnaj2aoob" path="res://Enemies/BaseEnemy.tscn" id="4_ux1cc"]
+[ext_resource type="Resource" uid="uid://dwn4ipuxcrgmu" path="res://Enemies/Data/zigzag_virus.tres" id="5_dxc0g"]
+[ext_resource type="PackedScene" uid="uid://devewqoeslptk" path="res://Enemies/ZigzagEnemy.tscn" id="6_24ong"]
+
+[sub_resource type="Resource" id="Resource_jgl7w"]
+script = ExtResource("2_djyry")
+enemy_scene = ExtResource("4_ux1cc")
+enemy_data = ExtResource("3_lqos2")
+count = 3
+metadata/_custom_type_script = "uid://sy26txyf3q51"
+
+[sub_resource type="Resource" id="Resource_1rmc2"]
+script = ExtResource("2_djyry")
+enemy_scene = ExtResource("6_24ong")
+enemy_data = ExtResource("5_dxc0g")
+count = 2
+metadata/_custom_type_script = "uid://sy26txyf3q51"
+
+[resource]
+script = ExtResource("1_h4req")
+spawn_entries = Array[ExtResource("2_djyry")]([SubResource("Resource_jgl7w"), SubResource("Resource_1rmc2")])
+metadata/_custom_type_script = "uid://bsst605eyxs0h"

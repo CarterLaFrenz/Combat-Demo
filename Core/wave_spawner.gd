@@ -3,24 +3,19 @@ extends Node
 @onready var score_label = $"../CanvasLayer/ScoreLabel"
 @onready var timer_label = $"../CanvasLayer/TimerLabel"
 @onready var spawn_timer = $SpawnTimer
-@onready var game_timer = $GameTimer
-
-var enemy_scene = preload("res://Enemies/BaseEnemy.tscn")
-var zigzag_scene = preload("res://Enemies/ZigzagEnemy.tscn")
-
-var basic_data = preload("res://Enemies/Data/basic_virus.tres")
-var zigzag_data = preload("res://Enemies/Data/zigzag_virus.tres")
-var big_data = preload("res://Enemies/Data/big_virus.tres")
+@onready var intermission_timer = $IntermissionTimer
 
 var score = 0
-var game_duration = 90.0
 var arena_size = Vector2(1920, 1080)
 
-var base_spawn_interval = 3.0
-var min_spawn_interval = 0.8
-var base_enemies_per_wave = 1
-var big_enemy_threshold = 30.0
-var zigzag_enemy_threshold = 15.0
+
+@export var waves : Array[WaveData] = []
+var wave_index : int = 0
+enum State { IDLE, SPAWNING, CLEARING, INTERMISSION }
+var state : State = State.IDLE
+var remaining_count : int = 0
+var spawn_queue : Array[SpawnEntry] = []
+
 
 func _ready():
 	var player = get_tree().get_first_node_in_group("player")
@@ -29,43 +24,27 @@ func _ready():
 	update_score_label()
 
 func start_game():
-	game_timer.wait_time = game_duration
-	game_timer.one_shot = true
-	game_timer.start()
-	spawn_timer.wait_time = base_spawn_interval
-	spawn_timer.start()
+	start_wave()
+	
 
-func _process(delta):
-	var time_left = game_timer.time_left
-	timer_label.text = "Time: " + str(int(time_left))
-
-	var elapsed = game_duration - time_left
-	var progress = elapsed / game_duration
-	spawn_timer.wait_time = lerp(base_spawn_interval, min_spawn_interval, progress)
 
 func _on_spawn_timer_timeout():
-	var elapsed = game_duration - game_timer.time_left
-	var progress = elapsed / game_duration
-	var count = base_enemies_per_wave + int(progress * 3)
-
-	for i in count:
-		spawn_enemy(elapsed)
-
-func spawn_enemy(elapsed: float):
-	var enemy
-	var roll = randf()
+	var entry = spawn_queue.pop_front()
 	
-	if elapsed > big_enemy_threshold and roll > 0.6:
-		enemy = enemy_scene.instantiate()
-		enemy.enemy_data = big_data
-	elif elapsed > zigzag_enemy_threshold and roll > 0.35 and roll <= 0.6:
-		enemy = zigzag_scene.instantiate()
-		enemy.enemy_data = zigzag_data
-	else:
-		enemy = enemy_scene.instantiate()
-		enemy.enemy_data = basic_data
+	spawn_enemy(entry)
+	
+	if spawn_queue.is_empty():
+		spawn_timer.stop()
+		state = State.CLEARING
+	
+
+
+func spawn_enemy(entry: SpawnEntry):
+	
+	var enemy = entry.enemy_scene.instantiate()
+	enemy.enemy_data = entry.enemy_data
+	
 	enemy.global_position = get_spawn_position()
-	enemy.health = enemy.enemy_data.max_health
 	enemy.died.connect(_on_enemy_died)
 	get_tree().current_scene.add_child(enemy)
 
@@ -79,28 +58,62 @@ func get_spawn_position() -> Vector2:
 	return Vector2.ZERO
 
 func _on_enemy_died(points: int):
+	remaining_count -= 1
+	print("died, remaining: ", remaining_count)
 	score += points
 	update_score_label()
+	
+	if remaining_count == 0:
+		state = State.INTERMISSION
+		intermission_timer.start()
 
 func update_score_label():
 	score_label.text = "Score: " + str(score)
 
-func _on_game_timer_timeout():
+func _on_intermission_timer_timeout():
+	print("intermission over, index: ", wave_index)
+	wave_index += 1
+	if wave_index < waves.size():
+		start_wave()
+	else:
+		_on_victory()
+	
+
+func _on_victory():
 	spawn_timer.stop()
-	timer_label.text = "0"
+	intermission_timer.stop()
+	state = State.IDLE
+	timer_label.text = "YOU WIN"
 	score_label.text = "Final Score: " + str(score) + "\nPress R to restart"
-	set_process(false)
 	get_tree().paused = true
 
 func _input(event):
-	if event.is_action_pressed("restart") and game_timer.is_stopped():
+	if event.is_action_pressed("restart"):
 		get_tree().paused = false
 		get_tree().reload_current_scene()
 
 func _on_player_died():
 	spawn_timer.stop()
-	game_timer.stop()
+	intermission_timer.stop()
 	timer_label.text = "GAME OVER"
 	score_label.text = "Final Score: " + str(score) + "\nPress R to restart"
-	set_process(false)
 	get_tree().paused = true
+
+
+#state machine
+func start_wave():
+	var current_wave = waves[wave_index]
+	spawn_queue.clear()
+	
+	for entry in current_wave.spawn_entries:
+		for i in entry.count:
+			spawn_queue.append(entry)
+	
+	spawn_queue.shuffle()
+	remaining_count = spawn_queue.size()
+	
+	spawn_timer.wait_time = waves[wave_index].time_gap
+	spawn_timer.start()
+	
+	timer_label.text = "Wave %d / %d" % [wave_index + 1, waves.size()]
+	state = State.SPAWNING

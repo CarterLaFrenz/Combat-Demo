@@ -15,7 +15,6 @@ var knockback_velocity: Vector2 = Vector2.ZERO
 signal died(points: int)
 
 var _player: Node2D
-var _base_modulate: Color = Color.WHITE
 
 
 func _ready():
@@ -26,7 +25,6 @@ func _ready():
 	
 	health = enemy_data.max_health
 	scale = Vector2.ONE * enemy_data.body_scale  # overrides any scale set on the scene root
-	_base_modulate = sprite.modulate
 	_player = get_tree().get_first_node_in_group("player")
 
 
@@ -107,7 +105,7 @@ func take_damage(amount: int, knockback_direction: Vector2 = Vector2.ZERO, knock
 	flash_hit()
 
 	if knockback_force > 0:
-		knockback_velocity = knockback_direction * knockback_force
+		knockback_velocity = (knockback_direction * knockback_force)/enemy_data.knockback_res
 		_change_state(STATE_STUNNED)
 
 
