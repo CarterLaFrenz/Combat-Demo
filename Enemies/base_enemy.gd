@@ -13,9 +13,10 @@ var current_state: int = STATE_CHASE
 var knockback_velocity: Vector2 = Vector2.ZERO
 
 signal died(points: int)
+signal copy_requested(pos: Vector2)
 
 var _player: Node2D
-
+var is_copy: bool = false
 
 func _ready():
 	
@@ -46,7 +47,9 @@ func _handle_state(delta: float) -> void:
 		STATE_STUNNED:
 			_state_stunned(delta)
 		STATE_DYING:
-			pass
+			died.emit(0 if is_copy else enemy_data.score_value)
+			spawn_death_particles()
+			queue_free()
 
 
 func _state_chase(delta: float) -> void:
@@ -82,7 +85,7 @@ func _change_state(new_state: int) -> void:
 func _enter_state(state: int) -> void:
 	match state:
 		STATE_DYING:
-			died.emit(enemy_data.score_value)
+			died.emit(0 if is_copy else enemy_data.score_value)
 			spawn_death_particles()
 			queue_free()
 
@@ -134,3 +137,7 @@ func spawn_death_particles():
 	get_tree().current_scene.add_child(particles)
 	await get_tree().create_timer(0.5).timeout
 	particles.queue_free()
+
+
+func request_copy(pos: Vector2) -> void:
+	copy_requested.emit(pos)

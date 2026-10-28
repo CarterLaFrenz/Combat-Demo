@@ -15,5 +15,4 @@ metadata/_custom_type_script = "uid://sy26txyf3q51"
 [resource]
 script = ExtResource("1_2vt48")
 spawn_entries = Array[ExtResource("2_mghi7")]([SubResource("Resource_spchp")])
-time_gap = 3
 metadata/_custom_type_script = "uid://bsst605eyxs0h"

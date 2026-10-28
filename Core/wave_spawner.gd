@@ -13,7 +13,7 @@ var arena_size = Vector2(1920, 1080)
 var wave_index : int = 0
 enum State { IDLE, SPAWNING, CLEARING, INTERMISSION }
 var state : State = State.IDLE
-var remaining_count : int = 0
+var alive_count : int = 0
 var spawn_queue : Array[SpawnEntry] = []
 
 
@@ -31,7 +31,7 @@ func start_game():
 func _on_spawn_timer_timeout():
 	var entry = spawn_queue.pop_front()
 	
-	spawn_enemy(entry)
+	spawn_enemy(entry, get_spawn_position())
 	
 	if spawn_queue.is_empty():
 		spawn_timer.stop()
@@ -39,14 +39,21 @@ func _on_spawn_timer_timeout():
 	
 
 
-func spawn_enemy(entry: SpawnEntry):
+func spawn_enemy(entry: SpawnEntry, pos: Vector2, copy: bool = false):
 	
 	var enemy = entry.enemy_scene.instantiate()
 	enemy.enemy_data = entry.enemy_data
-	
-	enemy.global_position = get_spawn_position()
+	enemy.is_copy = copy
+	enemy.global_position = pos
+
+	alive_count += 1
 	enemy.died.connect(_on_enemy_died)
+	enemy.copy_requested.connect(_on_copy_requested.bind(entry))
+
 	get_tree().current_scene.add_child(enemy)
+
+func _on_copy_requested(pos: Vector2, entry: SpawnEntry):
+	spawn_enemy(entry, pos, true)
 
 func get_spawn_position() -> Vector2:
 	var side = randi() % 4
@@ -58,12 +65,15 @@ func get_spawn_position() -> Vector2:
 	return Vector2.ZERO
 
 func _on_enemy_died(points: int):
-	remaining_count -= 1
-	print("died, remaining: ", remaining_count)
+	alive_count -= 1
+	print(alive_count)
 	score += points
 	update_score_label()
+	_check_wave_cleared()
 	
-	if remaining_count == 0:
+
+func _check_wave_cleared():
+	if state == State.CLEARING and alive_count == 0:
 		state = State.INTERMISSION
 		intermission_timer.start()
 
@@ -91,6 +101,13 @@ func _input(event):
 	if event.is_action_pressed("restart"):
 		get_tree().paused = false
 		get_tree().reload_current_scene()
+	
+	#debug
+	if event is InputEventKey and event.pressed and event.keycode == KEY_C:
+		var enemies = get_tree().get_nodes_in_group("enemy")
+		if not enemies.is_empty():
+			var e = enemies.pick_random()
+			e.request_copy(e.global_position + Vector2(60, 0))
 
 func _on_player_died():
 	spawn_timer.stop()
@@ -110,7 +127,6 @@ func start_wave():
 			spawn_queue.append(entry)
 	
 	spawn_queue.shuffle()
-	remaining_count = spawn_queue.size()
 	
 	spawn_timer.wait_time = waves[wave_index].time_gap
 	spawn_timer.start()
