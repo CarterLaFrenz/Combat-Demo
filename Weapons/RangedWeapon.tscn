@@ -104,6 +104,12 @@ _data = {
 [node name="RangedWeapon" type="Node2D" unique_id=1129598773]
 process_mode = 1
 script = ExtResource("1_lanyh")
+speed_chain = Array[int]([600, 700, 900])
+scale_chain = Array[Vector2]([Vector2(1, 1), Vector2(1, 1), Vector2(1.5, 1.5)])
+combo_chain = Array[String](["recoil", "recoil_2", "recoil_3"])
+damage_chain = Array[int]([15, 20, 30])
+knockback_chain = Array[int]([150, 150, 300])
+move_multiplier = 0.8
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=320171184]
 

@@ -251,6 +251,12 @@ _data = {
 [node name="LightWeapon" type="Node2D" unique_id=344931263]
 process_mode = 1
 script = ExtResource("1_lrs1p")
+combo_chain = Array[String](["thrust", "wide_thrust", "long_stab"])
+damage_chain = Array[int]([25, 30, 40])
+knockback_chain = Array[int]([150, 150, 250])
+push_speed = 200.0
+push_sign = -1.0
+move_multiplier = 0.7
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=522468822]
 

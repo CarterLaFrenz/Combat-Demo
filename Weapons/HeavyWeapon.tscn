@@ -263,6 +263,15 @@ _data = {
 [node name="HeavyWeapon" type="Node2D" unique_id=1080407253]
 process_mode = 1
 script = ExtResource("1_crtc8")
+hitlag_duration = 0.08
+shake_strength = 8.0
+shake_duration = 0.15
+combo_chain = Array[String](["sweep", "overhead", "spin"])
+damage_chain = Array[int]([40, 50, 65])
+knockback_chain = Array[int]([300, 400, 500])
+push_speed = 250.0
+push_sign = 1.0
+move_multiplier = 0.2
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=624901197]
 
